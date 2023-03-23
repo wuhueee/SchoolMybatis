@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.pojo">
+
+<select id="findCourseById" parameterType="Integer" resultType="Course">
+   select *from s_course where id=#{id}
+   </select>
+
+    <select id="findCourseBySchoolName" parameterType="String" resultMap="CourseAndAcademy">
+        select c.*,a.id aid,a.schoolname,c.id cid
+from s_course c,s_academy a
+where c.sid=a.id and a.schoolname=#{schoolname}
+    </select>
+
+    <resultMap id="CourseAndAcademy" type="Academy">
+        <id property="id" column="aid"/>
+        <result property="schoolname" column="schoolname"/>
+        <collection property="courselist" ofType="Course">
+            <id property="id" column="cid"/>
+            <result property="name" column="name"/>
+            <result property="hours" column="hours"/>
+            <result property="sid" column="sid"/>
+        </collection>
+    </resultMap>
+
+    <update id="updateCourse">
+        update s_course set hours=#{hours} where id=#{id}
+    </update>
+    <insert id="insertCourse">
+        insert into s_course(name,hours,sid) values(#{name},#{hours},#{sid});
+    </insert>
+
+    <select id="findAll"  resultMap="CourseAndAcademy1">
+        select c.*,a.id aid,a.schoolname,c.id cid
+        from s_course c,s_academy a
+        where c.sid=a.id
+    </select>
+
+    <resultMap id="CourseAndAcademy1" type="Academy">
+        <id property="id" column="aid"/>
+        <result property="schoolname" column="schoolname"/>
+        <collection property="courselist" ofType="Course">
+            <id property="id" column="cid"/>
+            <result property="name" column="name"/>
+            <result property="hours" column="hours"/>
+            <result property="sid" column="sid"/>
+        </collection>
+    </resultMap>
+</mapper>
